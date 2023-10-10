@@ -1,0 +1,251 @@
+<html>
+
+<canvas id="mycanvas" width="1000" height="800" style="background-color: black"></canvas>
+
+
+<script>
+    
+    var canvas= document.getElementById("mycanvas");
+    var g_ctx=canvas.getContext("2d");
+    
+    var scqurex_position=100;
+    var scqurey_position = 100;
+    
+    var size_of_the_scqure=10;
+    
+    var ssrow=11;
+    var scloumn=8;
+    var maxsize=89;
+   var array_size=88;
+    
+    
+    var allien_ba=[0,0,1,0,0,0,0,0,1,0,0,
+0,0,0,1,0,0,0,1,0,0,0,
+0,0,1,1,1,1,1,1,1,0,0,
+0,1,1,0,1,1,1,0,1,1,0,
+1,1,1,1,1,1,1,1,1,1,1
+,1,0,1,1,1,1,1,1,1,0,1,
+1,0,1,0,0,0,0,0,1,0,1
+,0,0,0,1,1,0,1,1,0,0,0]
+    
+    class allienBa{
+        
+        constructor(i_x,i_y,i_size,i_num)
+           {
+               this.x_position=i_x;
+               this.y_position=i_y;
+               this.size=i_size;
+           }
+        
+        draw_allien(i_contex)
+        
+        {
+           i_contex.fillStyle="white"; i_contex.fillRect(this.x_position,this.y_position,this.size,this.size)
+        }
+        
+        
+        
+    }
+     var allienpic= new allienBa(scqurex_position,scqurey_position,size_of_the_scqure);
+    
+    
+    
+        
+    
+   /* function drawallien()
+    {
+        for(i=0;i<maxsize-1;i++)
+            
+        
+    { 
+        var number=allien[i];
+        
+        allienpic.x_position+=size_of_the_scqure
+      
+        
+           
+               if((i+1)%ssrow)
+            {
+                allienpic.y_position=-size_of_the_scqure;
+                allienpic.x_position=scqurex_position
+            }
+               
+        
+        if(i%ssrow == 0){
+            allienpic.y_position+=size_of_the_scqure;
+            allienpic.x_position=scqurex_position;
+        }
+        
+               if(number==1){
+        
+               allienpic.draw_allien(g_ctx);
+        console.log("hello");
+               }
+        
+        
+        
+    }}*/
+    
+    class game_gueid{
+        
+        constructor(x_po,y_po,length,row ,array_size,number,num)
+        {
+            this.xposition=x_po;
+            this.y_position=y_po;
+            this.length=length;
+           // this.draw_scqure=draw_scqure;
+            this.row_size=row;
+            this.arraysize=array_size;
+            this.number=number;
+            this.num=num;
+        }
+        
+        
+        
+        
+        
+        
+        draw_allien(ctx)
+        {
+             allienpic.x_position+=this.length;
+               if(this.num%11==0){
+                allienpic.y_position+=10;
+                allienpic.x_position=scqurex_position;
+            }
+          if(this.number ==1){
+         
+           allienpic.draw_allien(ctx);
+         //   console.log("hellop");
+          }
+          
+        }
+        
+        
+        
+    }
+    
+    
+   
+    
+    for(i=0;i<array_size;i++)
+        {
+         
+    var    number =   allien_ba[i];
+            var num1=i;
+            var drawallien=new game_gueid(scqurex_position,scqurey_position,size_of_the_scqure,ssrow,array_size,number,num1)
+                drawallien.draw_allien(g_ctx);
+        }
+
+    
+    
+    
+       
+        var right = 0;
+        var left=0;
+        var up =0;
+        var down=0;
+        
+        
+        
+        function keydowneventhelder(l_fstkey){
+            
+     
+            console.log(l_fstkey.keyCode+" key is released");
+            
+            if(l_fstkey.keyCode == 39){
+               right= 1;
+            }
+              if(l_fstkey.keyCode == 37){
+               left = 1;
+            }
+              if(l_fstkey.keyCode == 38){
+               up = 1;
+            }
+              if(l_fstkey.keyCode == 40)
+               down = 1;
+            }
+        
+        function keyupeventhelder(p_fstkey){
+            
+     
+            console.log(p_fstkey.keyCode+" key is released");
+            
+            if(p_fstkey.keyCode == 39){
+               right= 0;
+            }
+              if(p_fstkey.keyCode == 37){
+               left = 0;
+            }
+              if(p_fstkey.keyCode == 38){
+               up = 0;
+            }
+              if(p_fstkey.keyCode == 40){
+               down = 0;
+            }
+        }
+        
+    
+    
+       window.addEventListener("keyup", keydowneventhelder);
+        
+          window.addEventListener("keydown", keyupeventhelder); 
+    
+    
+    
+    function gameloop()
+    {
+        
+    }
+    
+    var setintervalids=  setInterval(gameloop,1000/30);
+    
+    
+    
+    
+    
+    
+  //  drawallien();
+        
+     /*   function Gameloop()
+        {
+            
+        
+           
+     
+            
+            
+            
+            
+        }
+        
+        
+        var setintervalids= setInterval(Gameloop,1000/30);*/
+        
+        
+        
+ /*   <--- secound allien---->  */ 
+        
+        var secoundallien_xposition=500;
+         var secoundallien_yposition =100;
+    
+    
+    var secoundallien_size=10;
+    
+    var secoundallienrow=8;
+    
+    
+    
+    var allienArray={}
+        
+            
+            
+            
+    
+    
+    
+    
+    
+    </script>
+
+
+</html>

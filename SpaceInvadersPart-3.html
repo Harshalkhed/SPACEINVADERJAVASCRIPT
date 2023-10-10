@@ -1,0 +1,321 @@
+<html>
+<canvas canvas id ="myCanvas" width =1510 height = 700 style="background-color: rgb(34, 34, 34)"></canvas>
+    <script>
+        
+        var g_Canvas = document.getElementById("myCanvas");
+        var g_Context = g_Canvas.getContext("2d");
+        
+        var g_FrameRate = 30;
+        var g_TimeInterval = 1000/g_FrameRate;
+        var SetIntervalID = setInterval(Gameloop,g_TimeInterval);
+        
+        var g_Alien1Row = 8;
+        var g_Alien1Col = 11;
+        var g_Alien1xposSquare = 150;
+        var g_Alien1yposSquare = 60;
+        var g_Alien1SquareSize = 4;
+        var g_AlienArray = [];
+        var g_Alien1_BA = [0,0,1,0,0,0,0,0,1,0,0,
+                           1,0,0,1,0,0,0,1,0,0,1,
+                           1,0,1,1,1,1,1,1,1,0,1,
+                           1,1,1,0,1,1,1,0,1,1,1,
+                           1,1,1,1,1,1,1,1,1,1,1,
+                           0,1,1,1,1,1,1,1,1,1,0,
+                           0,0,1,0,0,0,0,0,1,0,0,
+                           0,1,0,0,0,0,0,0,0,1,0];
+        
+        var g_Alien2Row = 8;
+        var g_Alien2Col = 11;
+        var g_Alien2xposSquare = 150;
+        var g_Alien2yposSquare = 100;
+        var g_Alien2SquareSize = 4;
+        var g_Alien2Array = [];
+        var g_Alien2_BA = [0,0,1,0,0,0,0,0,1,0,0,
+                           0,0,0,1,0,0,0,1,0,0,0,
+                           0,0,1,1,1,1,1,1,1,0,0,
+                           0,1,1,0,1,1,1,0,1,1,0,
+                           1,1,1,1,1,1,1,1,1,1,1,
+                           1,0,1,1,1,1,1,1,1,0,1,
+                           1,0,1,0,0,0,0,0,1,0,1,
+                           0,0,0,1,1,0,1,1,0,0,0];
+        
+        var g_Alien3Row = 9;
+        var g_Alien3Col = 9;
+        var g_Alien3xposSquare = 155;
+        var g_Alien3yposSquare = 140;
+        var g_Alien3SquareSize = 4;
+        var g_Alien3Array = [];
+        var g_Alien3_BA = [0,0,1,0,0,0,1,0,0,
+                           0,0,0,1,0,1,0,0,0,
+                           0,0,1,1,1,1,1,0,0,
+                           0,1,1,0,1,0,1,1,0,
+                           1,1,1,1,1,1,1,1,1,
+                           1,0,1,1,1,1,1,0,1,
+                           1,0,1,1,1,1,1,0,1,
+                           0,0,0,1,0,1,0,0,0,
+                           0,0,1,1,0,1,1,0,0];
+        
+        var g_msRow = 7;
+        var g_mscol = 16;
+        var g_msxposSquare = 700;
+        var g_msyposSquare = 10;
+        var g_msSquareSize = 5;
+        var g_ms_BA = [0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,
+                       0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,
+                       0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+                       0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,
+                       1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+                       0,0,1,1,1,0,0,1,1,0,0,1,1,1,0,0,
+                       0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0];
+        
+        var g_ssRow = 13;
+        var g_sscol = 15;
+        var g_ssxposSquare = 700;
+        var g_ssyposSquare = 620;
+        var g_ssSquareSize = 5;
+        var g_ss_BA =   [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
+                        0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,
+                        0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,
+                        0,0,1,0,0,1,1,1,1,1,0,0,1,0,0,
+                        0,0,1,0,0,1,1,1,1,1,0,0,1,0,0,
+                        1,0,1,1,1,1,1,1,1,1,1,1,1,0,1,
+                        1,0,1,1,1,1,1,1,1,1,1,1,1,0,1,
+                        1,0,1,1,1,1,1,1,1,1,1,1,1,0,1,
+                        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+                        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+                        1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,
+                        1,1,0,0,1,1,0,1,0,1,1,0,0,1,1,
+                        1,0,0,0,0,0,0,1,0,0,0,0,0,0,1];
+        
+        var g_FrameCounter =0;
+        var g_stepleft=0;
+        var g_stepdown=0;
+        var g_stepright=0;
+        
+        class C_Pixel
+        {
+            constructor(l_x,l_y,l_s,l_c)
+            {
+                this.xposSquare = l_x;
+                this.yposSquare = l_y;
+                this.sizesquare = l_s;
+                this.color = l_c;
+            }
+            M_DrawPixel(l_Context)
+            {
+                    l_Context.fillStyle=this.color;
+                    l_Context.fillRect(this.xposSquare,this.yposSquare,this.sizesquare,this.sizesquare);    
+            }
+        }
+        
+        
+        class C_MainGrid
+        {
+            constructor(l_x,l_y,l_s,l_r,l_c,l_n,l_cr)
+            {
+                this.xposSquare = l_x;
+                this.yposSquare = l_y;
+                this.sizesquare = l_s;
+                this.row = l_r;
+                this.column = l_c;
+                this.BitMapArray = l_n;
+                this.ArrayGrid=[];
+                this.color = l_cr;
+                this.MoveLeftFlag = 0;
+                this.MoveRightFlag = 0;
+                this.MoveDownFlag = 0;
+                this.speed =10;
+                
+                this.M_CreateGrid();
+            }
+            M_CreateGrid()
+            {
+                var l_x = this.xposSquare;
+                var l_y = this.yposSquare;
+            
+                for(var i=0;i<this.row*this.column;i++)
+                    {
+                        this.ArrayGrid[i]= new C_Pixel(l_x,l_y,this.sizesquare,this.color);
+                        l_x+=this.sizesquare;
+                    
+                        if((i+1)%this.column==0)
+                            {
+                                l_x=this.xposSquare;
+                                l_y+=this.sizesquare;
+                            }
+                    }
+            }
+            M_DrawGrid(l_Context)
+            {
+                for(var i=0; i<this.ArrayGrid.length;i++)
+                {
+                    if(this.BitMapArray[i]==1)
+                        {
+                            this.ArrayGrid[i].M_DrawPixel(l_Context);
+                        }
+                }
+            }
+            M_Move()
+            {
+                if(this.MoveLeftFlag==1)
+                    {
+                        for(var x=0; x<this.ArrayGrid.length;x++)
+                            {
+                                this.ArrayGrid[x].xposSquare-=this.speed;
+                            }
+                    }
+                if(this.MoveRightFlag==1)
+                    {
+                       for(var x=0; x<this.ArrayGrid.length;x++)
+                            {
+                                this.ArrayGrid[x].xposSquare+=this.speed;
+                            }
+                    }
+                if(this.MoveDownFlag==1)
+                    {
+                       for(var x=0; x<this.ArrayGrid.length;x++)
+                            {
+                                this.ArrayGrid[x].yposSquare+=this.speed;
+                            }
+                    }
+                 
+            }
+            
+        }
+        
+        F_CreateAlien();
+        
+        function F_MoveAlien()
+        {
+            if(g_FrameCounter % 10 ==0)
+               {
+                    for(var i=0;i<20;i++)
+                    {
+                        g_AlienArray[i].M_Move();
+                    }
+               }
+            
+        }
+        
+        function F_AlienCollision()
+        {      
+                    if(g_AlienArray[0].ArrayGrid[0].xposSquare<=100)
+                        {
+                            for(var j=0;j<20;j++)
+                                {
+                                    console.log("0");
+                                    g_AlienArray[j].MoveDownFlag=1;
+                                    g_AlienArray[j].MoveLeftFlag=0;
+                                    if(g_AlienArray[0].ArrayGrid[0].yposSquare%10==0 && g_AlienArray[0].ArrayGrid[0].yposSquare>60)
+                                        {
+                                            g_AlienArray[j].MoveDownFlag=0;
+                                            g_AlienArray[j].MoveRightFlag=1;
+                                        }
+                                    
+                                    
+                                }
+                        }
+                    if(g_AlienArray[0].ArrayGrid[0].xposSquare==200)
+                        {
+                            for(var j=0;j<20;j++)
+                                {
+                                    console.log("00");
+                                    g_AlienArray[j].MoveRightFlag=0;
+                                    g_AlienArray[j].MoveDownFlag=1;
+                                    if(g_AlienArray[0].ArrayGrid[0].yposSquare>=80 && g_AlienArray[0].ArrayGrid[0].yposSquare%10==0)
+                                        {
+                                            g_AlienArray[j].MoveDownFlag=0;
+                                            g_AlienArray[j].MoveLeftFlag=1;
+                                        }
+                                }
+                            
+                        }
+        }
+                
+        
+        function Gameloop()
+        {
+            g_FrameCounter++;
+            //logic calculation
+            spaceship.M_Move();
+            //F_MoveAlien();
+            F_AlienCollision();
+            F_MoveAlien();
+            
+            
+             
+            //clear screen
+            f_ClearScreen();
+            
+
+            //draw
+            for(var i=0;i<20;i++)
+            {
+                g_AlienArray[i].M_DrawGrid(g_Context);
+                g_Alien2Array[i].M_DrawGrid(g_Context);
+                g_Alien3Array[i].M_DrawGrid(g_Context);
+            }
+            mainship.M_DrawGrid(g_Context);
+            spaceship.M_DrawGrid(g_Context);
+
+            
+        }
+        
+        function f_ClearScreen()
+        {
+            g_Context.clearRect(0,0,g_Canvas.width,g_Canvas.height);
+            g_Context.strokeRect(0,0,g_Canvas.width,g_Canvas.height);
+        }
+        
+        function f_KeyDownEventHandeler(l_Event)
+                {
+                    if(l_Event.keyCode == 37)
+                        {
+                            spaceship.MoveLeftFlag = 1;
+                        }
+                    if(l_Event.keyCode == 39)
+                        {
+                            spaceship.MoveRightFlag = 1;
+                        }
+                }
+                
+                function f_KeyUpEventHandeler(l_Event)
+                {
+                    if(l_Event.keyCode == 37)
+                        {
+                            spaceship.MoveLeftFlag = 0;
+                        }
+                    if(l_Event.keyCode == 39)
+                        {
+                            spaceship.MoveRightFlag = 0;
+                        }
+                }
+        
+        window.addEventListener("keydown",f_KeyDownEventHandeler);
+        window.addEventListener("keyup",f_KeyUpEventHandeler);
+        function F_CreateAlien()
+        {
+            var l_x = g_Alien1xposSquare;
+            var l_x2 = g_Alien2xposSquare;
+            var l_x3 = g_Alien3xposSquare;
+            for(var i=0;i<20;i++)
+            {
+                 g_AlienArray[i] =new C_MainGrid(l_x,g_Alien1yposSquare,g_Alien1SquareSize,g_Alien1Row,g_Alien1Col,g_Alien1_BA,"white");
+                l_x+=60;
+                g_AlienArray[i].MoveLeftFlag = 1;
+                
+                g_Alien2Array[i] = new C_MainGrid(l_x2,g_Alien2yposSquare,g_Alien2SquareSize,g_Alien2Row,g_Alien2Col,g_Alien2_BA,"white");
+                l_x2+=60;
+                
+                g_Alien3Array[i] = new C_MainGrid(l_x3,g_Alien3yposSquare,g_Alien3SquareSize,g_Alien3Row,g_Alien3Col,g_Alien3_BA,"white");
+                l_x3+=60;
+                
+            }
+        }
+        var mainship = new C_MainGrid(g_msxposSquare,g_msyposSquare,g_msSquareSize,g_msRow,g_mscol,g_ms_BA,"red");
+        mainship.M_CreateGrid();
+        
+        var spaceship = new C_MainGrid(g_ssxposSquare,g_ssyposSquare,g_ssSquareSize,g_ssRow,g_sscol,g_ss_BA,"green");
+        spaceship.M_CreateGrid();
+    </script>
+</html>

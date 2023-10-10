@@ -1,0 +1,437 @@
+<html>
+<canvas canvas id ="myCanvas" width =1510 height = 700></canvas>
+    <script>
+        
+        var g_Canvas = document.getElementById("myCanvas");
+        var g_Context = g_Canvas.getContext("2d");
+        
+        var g_FrameRate = 30;
+        var g_TimeInterval = 1000/g_FrameRate;
+        var SetIntervalID = setInterval(Gameloop,g_TimeInterval);
+        
+        var g_Row = 8;
+        var g_Col = 11;
+        var g_xposSquare = 10;
+        var g_yposSquare = 10;
+        var g_SquareSize = 5;
+        var g_Alien1_BA = [0,0,1,0,0,0,0,0,1,0,0,
+                           1,0,0,1,0,0,0,1,0,0,1,
+                           1,0,1,1,1,1,1,1,1,0,1,
+                           1,1,1,0,1,1,1,0,1,1,1,
+                           1,1,1,1,1,1,1,1,1,1,1,
+                           0,1,1,1,1,1,1,1,1,1,0,
+                           0,0,1,0,0,0,0,0,1,0,0,
+                           0,1,0,0,0,0,0,0,0,1,0];
+        
+        var g_msRow = 7;
+        var g_mscol = 16;
+        var g_msxposSquare = 100
+        var g_msyposSquare = 10;
+        var g_msSquareSize = 5;
+        var g_ms_BA = [0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,
+                       0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,
+                       0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+                       0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,
+                       1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+                       0,0,1,1,1,0,0,1,1,0,0,1,1,1,0,0,
+                       0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0];
+        
+        var g_ssRow = 10;
+        var g_sscol = 9;
+        var g_ssxposSquare = 200;
+        var g_ssyposSquare = 10;
+        var g_ssSquareSize = 5;
+        var g_ss_BA = [0,0,0,0,1,0,0,0,0,
+                       0,0,0,1,1,1,0,0,0,
+                       0,0,0,1,1,1,0,0,0,
+                       1,0,1,0,0,0,1,0,1,
+                       0,0,0,1,1,1,0,0,0,
+                       0,0,0,1,1,1,0,0,0,
+                       1,1,1,1,1,1,1,1,1,
+                       0,0,1,1,1,1,1,0,0,
+                       1,1,1,1,1,1,1,1,1,
+                       1,1,1,1,1,1,1,1,1];
+        
+        var g_b1Row = 6;
+        var g_b1col = 5;
+        var g_b1xposSquare = 300;
+        var g_b1yposSquare = 40;
+        var g_b1SquareSize = 5;
+        var g_b1_BA = [1,1,1,1,1,
+                       1,1,1,1,1,
+                       1,1,1,1,1,
+                       1,1,1,1,1,
+                       1,1,1,1,1,
+                       1,1,1,1,1];
+        
+        var g_b2Row = 6;
+        var g_b2col = 5;
+        var g_b2xposSquare = 300;
+        var g_b2yposSquare = 10;
+        var g_b2SquareSize = 5;
+        var g_b2_BA = [0,0,0,0,1,
+                       0,0,0,1,1,
+                       0,0,1,1,1,
+                       0,1,1,1,1,
+                       1,1,1,1,1,
+                       1,1,1,1,1];
+        /*var g_b2_BA =[1,1,1,1,0,
+                       1,1,1,0,0,
+                       1,1,0,0,0,
+                       1,0,0,0,0,
+                       1,1,1,1,1,
+                       1,1,1,1,1];*/
+        /*var g_b2Row = 6;
+        var g_b2col = 5;
+        var g_b2xposSquare = 325;
+        var g_b2yposSquare = 10;
+        var g_b2SquareSize = 5;
+        var g_b2_BA = [1,1,1,1,1,
+                       1,1,1,1,1,
+                       1,1,1,1,1,
+                       1,1,1,1,1,
+                       1,1,1,1,1,
+                       1,1,1,1,1];*/
+        
+        function Gameloop()
+        {
+            //logic calculation
+            
+             
+            //clear screen
+            f_ClearScreen();
+            
+
+            //draw
+            alien1.M_StoreGrid(g_Context);
+            mainship.M_StoreMSGrid(g_Context);
+            spaceship.M_StoreSSGrid(g_Context);
+            bunk1.M_StoreB1Grid(g_Context);
+            bunk2.M_StoreB2Grid(g_Context);
+            
+        }
+        
+    // ---------------------This class is for Alien 1----------------------------------------------    
+        
+        class C_Grid
+        {
+            constructor(l_x,l_y,l_s,l_n)
+            {
+                this.xposSqaure = l_x;
+                this.yposSquare = l_y;
+                this.sizesquare = l_s;
+                this.number = l_n;
+            }
+            M_DrawGrid(l_Context)
+            {
+                if(this.number==1)
+                    {
+                        l_Context.fillStyle="black";
+                        l_Context.fillRect(this.xposSqaure,this.yposSquare,this.sizesquare,this.sizesquare);
+                    }
+            }
+        }
+        
+        class C_MainGrid
+        {
+            constructor(l_x,l_y,l_s,l_r,l_c,l_n)
+            {
+                this.xposSqaure = l_x;
+                this.yposSquare = l_y;
+                this.sizesquare = l_s;
+                this.row = l_r;
+                this.column = l_c;
+                this.number = l_n;
+                this.ArrayGrid=[];
+            }
+            M_CreateGrid()
+            {
+                var l_x = this.xposSqaure;
+                var l_y = this.yposSquare;
+            
+                for(var i=0;i<this.row*this.column;i++)
+                    {
+                        this.ArrayGrid[i]= new C_Grid(l_x,l_y,this.sizesquare,g_Alien1_BA[i]);
+                        l_x+=this.sizesquare;
+                    
+                        if((i+1)%this.column==0)
+                            {
+                                l_x=this.xposSqaure;
+                                l_y+=this.sizesquare;
+                            }
+                    }
+            }
+            M_StoreGrid(l_Context)
+            {
+                for(var i=0; i<this.ArrayGrid.length;i++)
+                {
+                    this.ArrayGrid[i].M_DrawGrid(l_Context);
+                }
+            }
+            
+        }
+        
+        // ---------------------This class is for Main Ship----------------------------------------------  
+        
+        class C_MSGrid
+        {
+            constructor(l_x,l_y,l_s,l_n)
+            {
+                this.msxposSqaure = l_x;
+                this.msyposSquare = l_y;
+                this.mssizesquare = l_s;
+                this.msnumber = l_n;
+            }
+            M_DrawMSGrid(l_Context)
+            {
+                if(this.msnumber==1)
+                    {
+                        l_Context.fillStyle="red";
+                        l_Context.fillRect(this.msxposSqaure,this.msyposSquare,this.mssizesquare,this.mssizesquare);
+                    }
+            }
+        }
+        class C_MainMSGrid
+        {
+            constructor(l_x,l_y,l_s,l_r,l_c,l_n)
+            {
+                this.msxposSqaure = l_x;
+                this.msyposSquare = l_y;
+                this.mssizesquare = l_s;
+                this.msrow = l_r;
+                this.mscolumn = l_c;
+                this.msnumber = l_n;
+                this.msArrayGrid=[];
+            }
+            M_CreateMSGrid()
+            {
+                var l_x = this.msxposSqaure;
+                var l_y = this.msyposSquare;
+            
+                for(var i=0;i<this.msrow*this.mscolumn;i++)
+                    {
+                        this.msArrayGrid[i]= new C_MSGrid(l_x,l_y,this.mssizesquare,g_ms_BA[i]);
+                        l_x+=this.mssizesquare;
+                    
+                        if((i+1)%this.mscolumn==0)
+                            {
+                                l_x=this.msxposSqaure;
+                                l_y+=this.mssizesquare;
+                            }
+                    }
+            }
+            M_StoreMSGrid(l_Context)
+            {
+                for(var i=0; i<this.msArrayGrid.length;i++)
+                {
+                    this.msArrayGrid[i].M_DrawMSGrid(l_Context);
+                }
+            }
+            
+        }
+        
+        //---------------------------- This class is for Space Ship ----------------------------------
+        
+        class C_SSGrid
+        {
+            constructor(l_x,l_y,l_s,l_n)
+            {
+                this.ssxposSqaure = l_x;
+                this.ssyposSquare = l_y;
+                this.sssizesquare = l_s;
+                this.ssnumber = l_n;
+            }
+            M_DrawSSGrid(l_Context)
+            {
+                if(this.ssnumber==1)
+                    {
+                        l_Context.fillStyle="green";
+                        l_Context.fillRect(this.ssxposSqaure,this.ssyposSquare,this.sssizesquare,this.sssizesquare);
+                    }
+            }
+        }
+        
+        class C_MainSSGrid
+        {
+            constructor(l_x,l_y,l_s,l_r,l_c,l_n)
+            {
+                this.ssxposSqaure = l_x;
+                this.ssyposSquare = l_y;
+                this.sssizesquare = l_s;
+                this.ssrow = l_r;
+                this.sscolumn = l_c;
+                this.ssnumber = l_n;
+                this.ssArrayGrid=[];
+            }
+            M_CreateSSGrid()
+            {
+                var l_x = this.ssxposSqaure;
+                var l_y = this.ssyposSquare;
+            
+                for(var i=0;i<this.ssrow*this.sscolumn;i++)
+                    {
+                        this.ssArrayGrid[i]= new C_SSGrid(l_x,l_y,this.sssizesquare,g_ss_BA[i]);
+                        l_x+=this.sssizesquare;
+                    
+                        if((i+1)%this.sscolumn==0)
+                            {
+                                l_x=this.ssxposSqaure;
+                                l_y+=this.sssizesquare;
+                            }
+                    }
+            }
+            M_StoreSSGrid(l_Context)
+            {
+                for(var i=0; i<this.ssArrayGrid.length;i++)
+                {
+                    this.ssArrayGrid[i].M_DrawSSGrid(l_Context);
+                }
+            }
+            
+        }
+        
+        
+        //------------------------This class is for Bunkar1 -------------------------------------------------
+        
+        class C_B1Grid
+        {
+            constructor(l_x,l_y,l_s,l_n)
+            {
+                this.b1xposSqaure = l_x;
+                this.b1yposSquare = l_y;
+                this.b1sizesquare = l_s;
+                this.b1number = l_n;
+            }
+            M_DrawB1Grid(l_Context)
+            {
+                if(this.b1number==1)
+                    {
+                        l_Context.fillStyle="green";
+                        l_Context.fillRect(this.b1xposSqaure,this.b1yposSquare,this.b1sizesquare,this.b1sizesquare);
+                    }
+            }
+        }
+        
+        class C_MainB1Grid
+        {
+            constructor(l_x,l_y,l_s,l_r,l_c,l_n)
+            {
+                this.b1xposSqaure = l_x;
+                this.b1yposSquare = l_y;
+                this.b1sizesquare = l_s;
+                this.b1row = l_r;
+                this.b1column = l_c;
+                this.b1number = l_n;
+                this.b1ArrayGrid=[];
+            }
+            M_CreateB1Grid()
+            {
+                var l_x = this.b1xposSqaure;
+                var l_y = this.b1yposSquare;
+            
+                for(var i=0;i<this.b1row*this.b1column;i++)
+                    {
+                        this.b1ArrayGrid[i]= new C_B1Grid(l_x,l_y,this.b1sizesquare,g_b1_BA[i]);
+                        l_x+=this.b1sizesquare;
+                    
+                        if((i+1)%this.b1column==0)
+                            {
+                                l_x=this.b1xposSqaure;
+                                l_y+=this.b1sizesquare;
+                            }
+                    }
+            }
+            M_StoreB1Grid(l_Context)
+            {
+                for(var i=0; i<this.b1ArrayGrid.length;i++)
+                {
+                    this.b1ArrayGrid[i].M_DrawB1Grid(l_Context);
+                }
+            }
+            
+        }
+        
+        //--------------------------------------this class is for bunkar 2 ----------------------------------
+        
+         class C_B2Grid
+        {
+            constructor(l_x,l_y,l_s,l_n)
+            {
+                this.b2xposSqaure = l_x;
+                this.b2yposSquare = l_y;
+                this.b2sizesquare = l_s;
+                this.b2number = l_n;
+            }
+            M_DrawB2Grid(l_Context)
+            {
+                if(this.b2number==1)
+                    {
+                        l_Context.fillStyle="green";
+                        l_Context.fillRect(this.b2xposSqaure,this.b2yposSquare,this.b2sizesquare,this.b2sizesquare);
+                    }
+            }
+        }
+        
+        class C_MainB2Grid
+        {
+            constructor(l_x,l_y,l_s,l_r,l_c,l_n)
+            {
+                this.b2xposSqaure = l_x;
+                this.b2yposSquare = l_y;
+                this.b2sizesquare = l_s;
+                this.b2row = l_r;
+                this.b2column = l_c;
+                this.b2number = l_n;
+                this.b2ArrayGrid=[];
+            }
+            M_CreateB2Grid()
+            {
+                var l_x = this.b2xposSqaure;
+                var l_y = this.b2yposSquare;
+            
+                for(var i=0;i<this.b2row*this.b2column;i++)
+                    {
+                        this.b2ArrayGrid[i]= new C_B2Grid(l_x,l_y,this.b2sizesquare,g_b2_BA[i]);
+                        l_x+=this.b2sizesquare;
+                    
+                        if((i+1)%this.b2column==0)
+                            {
+                                l_x=this.b2xposSqaure;
+                                l_y+=this.b2sizesquare;
+                            }
+                    }
+            }
+            M_StoreB2Grid(l_Context)
+            {
+                for(var i=0; i<this.b2ArrayGrid.length;i++)
+                {
+                    this.b2ArrayGrid[i].M_DrawB2Grid(l_Context);
+                }
+            }
+            
+        }
+        
+        
+        function f_ClearScreen()
+        {
+            g_Context.clearRect(0,0,g_Canvas.width,g_Canvas.height);
+            g_Context.strokeRect(0,0,g_Canvas.width,g_Canvas.height);
+        }
+        
+        var alien1 = new C_MainGrid(g_xposSquare,g_yposSquare,g_SquareSize,g_Row,g_Col,g_Alien1_BA);
+        alien1.M_CreateGrid();
+        
+        var mainship = new C_MainMSGrid(g_msxposSquare,g_msyposSquare,g_msSquareSize,g_msRow,g_mscol,g_ms_BA);
+        mainship.M_CreateMSGrid();
+        
+        var spaceship = new C_MainSSGrid(g_ssxposSquare,g_ssyposSquare,g_ssSquareSize,g_ssRow,g_sscol,g_ss_BA);
+        spaceship.M_CreateSSGrid();
+        
+        var bunk1 = new C_MainB1Grid(g_b1xposSquare,g_b1yposSquare,g_b1SquareSize,g_b1Row,g_b1col,g_b1_BA);
+        bunk1.M_CreateB1Grid();
+        
+        var bunk2 = new C_MainB2Grid(g_b2xposSquare,g_b2yposSquare,g_b2SquareSize,g_b2Row,g_b2col,g_b2_BA);
+        bunk2.M_CreateB2Grid();
+        
+    </script>
+</html>
